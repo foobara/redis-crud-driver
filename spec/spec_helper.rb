@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "redis_crud_driver"
 
 RSpec.configure do |config|
