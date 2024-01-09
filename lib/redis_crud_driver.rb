@@ -1,6 +1,8 @@
-require_relative "redis_crud_driver/version"
+require "foobara/all"
 
-module RedisCrudDriver
-  class Error < StandardError; end
-  # Your code goes here...
+module Foobara
+  module RedisCrudDriver
+  end
 end
+
+Foobara::Util.require_directory(__dir__)
