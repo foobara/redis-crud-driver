@@ -1,5 +1,5 @@
-RSpec.describe RedisCrudDriver do
+RSpec.describe Foobara::RedisCrudDriver do
   it "has a version number" do
-    expect(RedisCrudDriver::Version::VERSION).to_not be_nil
+    expect(Foobara::RedisCrudDriver::Version::VERSION).to_not be_nil
   end
 end

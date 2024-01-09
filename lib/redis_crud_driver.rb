@@ -1,8 +1,10 @@
+require "redis"
+
 require "foobara/all"
 
 module Foobara
-  module RedisCrudDriver
+  class RedisCrudDriver < Persistence::EntityAttributesCrudDriver
   end
 end
 
-Foobara::Util.require_directory(__dir__)
+Foobara::Util.require_directory("#{__dir__}/../src")
