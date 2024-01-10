@@ -1,5 +1,7 @@
 module Foobara
   class RedisCrudDriver < Persistence::EntityAttributesCrudDriver
+    class NoRedisUrlError < StandardError; end
+
     class << self
       attr_writer :redis
 
@@ -7,7 +9,8 @@ module Foobara
         @redis ||= if ENV["REDIS_URL"]
                      Redis.new(url: ENV["REDIS_URL"])
                    else
-                     Redis.new
+                     raise NoRedisUrlError,
+                           'Must set ENV["REDIS_URL"] if trying to initialize RedisCrudDriver with no arguments'
                    end
       end
     end

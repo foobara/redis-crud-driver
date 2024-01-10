@@ -8,6 +8,7 @@ RSpec.describe Foobara::RedisCrudDriver do
       primary_key :pk
     end
   end
+  let(:skip_setting_default_crud_driver) { false }
   let(:credentials) { test_redis }
   let(:test_credentials) { "redis://localhost:6379/3" }
   let(:test_redis) { Redis.new(url: test_credentials) }
@@ -22,7 +23,9 @@ RSpec.describe Foobara::RedisCrudDriver do
 
   before do
     test_redis.flushdb
-    Foobara::Persistence.default_crud_driver = described_class.new(credentials)
+    unless skip_setting_default_crud_driver
+      Foobara::Persistence.default_crud_driver = described_class.new(credentials)
+    end
   end
 
   it "has a version number" do
@@ -44,8 +47,10 @@ RSpec.describe Foobara::RedisCrudDriver do
     context "with no REDIS_URL env var" do
       stub_env_var("REDIS_URL", nil)
 
-      it "defaults to Redis.new" do
-        expect(creds(described_class.redis)).to eq(creds(Redis.new))
+      it "raises" do
+        expect {
+          described_class.redis
+        }.to raise_error(described_class::NoRedisUrlError)
       end
     end
 
@@ -77,9 +82,12 @@ RSpec.describe Foobara::RedisCrudDriver do
 
     context "when using nothing" do
       let(:credentials) { nil }
+      let(:skip_setting_default_crud_driver) { true }
 
-      it "uses RedisCrudDriver.redis" do
-        expect(driver.raw_connection).to eq(described_class.redis)
+      it "raises" do
+        expect {
+          described_class.new(credentials)
+        }.to raise_error(described_class::NoRedisUrlError)
       end
     end
 
