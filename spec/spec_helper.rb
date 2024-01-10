@@ -30,6 +30,6 @@ RSpec.configure do |config|
   # config.raise_errors_for_deprecations!
 end
 
-require "redis_crud_driver"
+require "foobara/redis_crud_driver"
 
 Foobara::Util.require_directory("#{__dir__}/../../foobara/spec/support")

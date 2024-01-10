@@ -7,4 +7,4 @@ module Foobara
   end
 end
 
-Foobara::Util.require_directory("#{__dir__}/../src")
+Foobara::Util.require_directory("#{__dir__}/../../src")

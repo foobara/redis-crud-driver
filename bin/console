@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "redis_crud_driver"
+require "foobara/redis_crud_driver"
 
 require "pry"
 require "pry-byebug"
