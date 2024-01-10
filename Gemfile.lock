@@ -9,6 +9,7 @@ PATH
   remote: .
   specs:
     redis_crud_driver (0.1.0)
+      redis
 
 GEM
   remote: https://rubygems.org/
@@ -127,7 +128,6 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
-  redis
   redis_crud_driver!
   rspec
   rspec-its
