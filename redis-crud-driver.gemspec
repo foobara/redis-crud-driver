@@ -1,4 +1,4 @@
-require_relative "src/redis_crud_driver_version"
+require_relative "src/foobara/redis_crud_driver_version"
 
 Gem::Specification.new do |spec|
   spec.name = "redis-crud-driver"
