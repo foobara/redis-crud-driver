@@ -17,6 +17,7 @@ module Foobara
 
     attr_reader :prefix
 
+    # TODO: maybe we should distinguish between nil being passed in and no args? nil feels like it could be an error.
     def initialize(connection_or_credentials = nil, prefix: nil)
       @prefix = prefix
       super(connection_or_credentials)

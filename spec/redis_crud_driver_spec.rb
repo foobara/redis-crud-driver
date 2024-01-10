@@ -9,20 +9,17 @@ RSpec.describe Foobara::RedisCrudDriver do
     end
   end
   let(:skip_setting_default_crud_driver) { false }
-  let(:credentials) { test_redis }
-  let(:test_credentials) { "redis://localhost:6379/3" }
-  let(:test_redis) { Redis.new(url: test_credentials) }
+  let(:credentials) { nil }
+
+  # TODO: incorporate .env.test.local for this...
+  stub_env_var("REDIS_URL", "redis://localhost:6379/3")
 
   after do
     Foobara.reset_alls
-    # TODO: make this a project and put this in reset_all
-    if described_class.instance_variable_defined?(:@redis)
-      described_class.remove_instance_variable(:@redis)
-    end
+    described_class.reset_all
   end
 
   before do
-    test_redis.flushdb
     unless skip_setting_default_crud_driver
       Foobara::Persistence.default_crud_driver = described_class.new(credentials)
     end
@@ -33,6 +30,8 @@ RSpec.describe Foobara::RedisCrudDriver do
   end
 
   describe ".redis" do
+    let(:skip_setting_default_crud_driver) { true }
+
     def creds(redis)
       client = redis._client
 
@@ -69,6 +68,8 @@ RSpec.describe Foobara::RedisCrudDriver do
   end
 
   describe "#initialize" do
+    let(:skip_setting_default_crud_driver) { true }
+
     let(:driver) { described_class.new(credentials) }
 
     let(:fake_redis) { Redis.new }
@@ -80,9 +81,10 @@ RSpec.describe Foobara::RedisCrudDriver do
     let(:port) { fake_client.port }
     let(:db) { fake_client.db + 1 }
 
+    stub_env_var("REDIS_URL", nil)
+
     context "when using nothing" do
       let(:credentials) { nil }
-      let(:skip_setting_default_crud_driver) { true }
 
       it "raises" do
         expect {
