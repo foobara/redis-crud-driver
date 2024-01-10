@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    redis_crud_driver (0.1.0)
+    redis-crud-driver (0.1.0)
       redis
 
 GEM
@@ -128,7 +128,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
-  redis_crud_driver!
+  redis-crud-driver!
   rspec
   rspec-its
   rubocop-rake

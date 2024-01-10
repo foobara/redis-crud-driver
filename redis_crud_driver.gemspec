@@ -1,7 +1,7 @@
 require_relative "src/redis_crud_driver_version"
 
 Gem::Specification.new do |spec|
-  spec.name = "redis_crud_driver"
+  spec.name = "redis-crud-driver"
   spec.version = Foobara::RedisCrudDriverVersion::VERSION
   spec.authors = ["Miles Georgi"]
   spec.email = ["azimux@gmail.com"]
