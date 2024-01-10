@@ -11,6 +11,18 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     name: RSpec and Rubocop
+    services:
+      redis:
+        image: 'redis:6'
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+#    env:
+#      REDIS_URL: redis://redis:6379
     steps:
       - uses: actions/checkout@v3
       - name: setup ruby version and foobara branch and sha1
