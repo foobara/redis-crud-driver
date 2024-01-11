@@ -9,6 +9,7 @@ gemspec
 gem "foobara", git: "foobara", branch: "main"
 
 # Development dependencies go here
+gem "foobara-rubocop-rules", github: "foobara/rubocop-rules"
 gem "guard-rspec"
 gem "pry"
 gem "pry-byebug"

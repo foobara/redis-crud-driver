@@ -1,9 +1,17 @@
 GIT
   remote: foobara
-  revision: cc98779bd200c76add93fcc364d250cef63c080b
+  revision: 0ce95ee9735c1d094cd37d9aa3de669f184e975e
   branch: main
   specs:
     foobara (0.0.1)
+
+GIT
+  remote: https://github.com/foobara/rubocop-rules.git
+  revision: bdeaf31cca6539ce1f5e3bdb1674273989ccdb13
+  specs:
+    foobara-rubocop-rules (0.0.1)
+      rubocop
+      rubocop-rspec
 
 PATH
   remote: .
@@ -124,6 +132,7 @@ PLATFORMS
 
 DEPENDENCIES
   foobara!
+  foobara-rubocop-rules!
   guard-rspec
   pry
   pry-byebug
