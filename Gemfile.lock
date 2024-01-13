@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/foobara/dotenv-loader.git
-  revision: c777e36e8418bd981324b44f787d791a0b63d9fb
+  revision: 67bd1077855cca5de9a3f7720257b5bd2ee96c2e
   specs:
     foobara-dotenv-loader (0.1.0)
       dotenv
