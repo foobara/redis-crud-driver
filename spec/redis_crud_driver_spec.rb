@@ -11,9 +11,6 @@ RSpec.describe Foobara::RedisCrudDriver do
   let(:skip_setting_default_crud_driver) { false }
   let(:credentials) { nil }
 
-  # TODO: incorporate .env.test.local for this...
-  stub_env_var("REDIS_URL", "redis://localhost:6379/3")
-
   after do
     Foobara.reset_alls
     described_class.reset_all

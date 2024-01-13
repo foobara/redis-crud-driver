@@ -31,5 +31,8 @@ RSpec.configure do |config|
 end
 
 require "foobara/redis_crud_driver"
+require "foobara/load_dotenv"
+
+Foobara::LoadDotenv.run!(env: "test")
 
 Foobara::Util.require_directory("#{__dir__}/../../foobara/spec/support")
