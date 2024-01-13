@@ -23,7 +23,7 @@ GIT
 PATH
   remote: .
   specs:
-    redis-crud-driver (0.1.0)
+    foobara-redis-crud-driver (0.1.0)
       redis
 
 GEM
@@ -141,12 +141,12 @@ PLATFORMS
 DEPENDENCIES
   foobara!
   foobara-dotenv-loader!
+  foobara-redis-crud-driver!
   foobara-rubocop-rules!
   guard-rspec
   pry
   pry-byebug
   rake
-  redis-crud-driver!
   rspec
   rspec-its
   rubocop-rake
