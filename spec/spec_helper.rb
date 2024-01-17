@@ -32,7 +32,6 @@ end
 
 require "foobara/redis_crud_driver"
 require "foobara/load_dotenv"
+require "foobara/spec_helpers/all"
 
 Foobara::LoadDotenv.run!(env: "test")
-
-Foobara::Util.require_directory("#{__dir__}/../../foobara/spec/support")
