@@ -1,11 +1,11 @@
 RSpec.describe Foobara::RedisCrudDriver do
   let(:entity_class) do
     stub_class("SomeEntity", Foobara::Entity) do
-      attributes pk: :integer,
+      attributes id: :integer,
                  foo: :integer,
                  bar: :symbol
 
-      primary_key :pk
+      primary_key :id
     end
   end
   let(:skip_setting_default_crud_driver) { false }
@@ -436,8 +436,8 @@ RSpec.describe Foobara::RedisCrudDriver do
           expect(entity_class.all_exist?([101, 102])).to be(false)
 
           [
-            { foo: 11, bar: :baz, pk: 101 },
-            { foo: 22, bar: :baz, pk: 102 },
+            { foo: 11, bar: :baz, id: 101 },
+            { foo: 22, bar: :baz, id: 102 },
             { foo: 33, bar: :baz },
             { foo: 44, bar: :baz }
           ].map do |attributes|
@@ -507,7 +507,7 @@ RSpec.describe Foobara::RedisCrudDriver do
         entity_class.transaction do
           expect(entity_class.all_exist?([101, 102])).to be(false)
 
-          entity_class.create(foo: 11, bar: :baz, pk: 101)
+          entity_class.create(foo: 11, bar: :baz, id: 101)
 
           expect(entity_class.exists?(101)).to be(true)
 
@@ -528,12 +528,12 @@ RSpec.describe Foobara::RedisCrudDriver do
     context "when creating a record with an already-in-use key" do
       it "explodes" do
         entity_class.transaction do
-          entity_class.create(foo: 11, bar: :baz, pk: 101)
+          entity_class.create(foo: 11, bar: :baz, id: 101)
         end
 
         expect {
           entity_class.transaction do
-            entity_class.create(foo: 11, bar: :baz, pk: 101)
+            entity_class.create(foo: 11, bar: :baz, id: 101)
           end
         }.to raise_error(Foobara::Persistence::EntityAttributesCrudDriver::Table::CannotInsertError)
       end
@@ -542,7 +542,7 @@ RSpec.describe Foobara::RedisCrudDriver do
     context "when restoring with a created record" do
       it "hard deletes it" do
         entity_class.transaction do |tx|
-          record = entity_class.create(foo: 11, bar: :baz, pk: 101)
+          record = entity_class.create(foo: 11, bar: :baz, id: 101)
 
           tx.revert!
 
@@ -557,29 +557,62 @@ RSpec.describe Foobara::RedisCrudDriver do
 
     context "when persisting entity with an association" do
       let(:aggregate_class) do
-        stub_class "SomeAggregate", Foobara::Entity do
-          attributes pk: :integer,
-                     foo: :integer,
-                     some_entities: [SomeEntity]
+        entity_class
+        some_model_class
 
-          primary_key :pk
+        stub_class "SomeAggregate", Foobara::Entity do
+          attributes do
+            id :integer
+            foo :integer
+            some_model SomeModel, :required
+            some_entities [SomeEntity]
+          end
+
+          primary_key :id
+        end
+      end
+
+      let(:some_model_class) do
+        some_other_entity_class
+
+        stub_class "SomeModel", Foobara::Model do
+          attributes do
+            some_other_entity SomeOtherEntity, :required
+          end
+        end
+      end
+
+      let(:some_other_entity_class) do
+        stub_class "SomeOtherEntity", Foobara::Entity do
+          attributes do
+            id :integer
+            foo :integer, :required
+          end
+
+          primary_key :id
         end
       end
 
       it "writes the records to disk using primary keys" do
         some_entity2 = nil
 
-        some_entity1 = entity_class.transaction do
+        some_entity1 = aggregate_class.transaction do
           some_entity2 = entity_class.create(foo: 11, bar: :baz)
-          entity_class.create(foo: 11, bar: :baz, pk: 101)
+          entity_class.create(foo: 11, bar: :baz, id: 101)
         end
 
+        some_other_entity = nil
+
         entity_class.transaction do
-          some_entity3 = entity_class.create(foo: 11, bar: :baz, pk: 102)
+          some_entity3 = entity_class.create(foo: 11, bar: :baz, id: 102)
           some_entity4 = entity_class.create(foo: 11, bar: :baz)
+          some_other_entity = SomeOtherEntity.create(foo: 11)
+
+          some_model = SomeModel.new(some_other_entity:)
 
           aggregate_class.create(
             foo: 30,
+            some_model:,
             some_entities: [
               1,
               some_entity1,
@@ -589,28 +622,34 @@ RSpec.describe Foobara::RedisCrudDriver do
           )
         end
 
-        entity_class.transaction do |tx|
+        entity_class.transaction do
           crud_table = aggregate_class.current_transaction_table.entity_attributes_crud_driver_table
           raw_records = crud_table.all.to_a
           expect(raw_records.size).to eq(1)
           raw_record = raw_records.first
           expect(raw_record[:some_entities]).to contain_exactly(1, 2, 101, 102)
+          expect(raw_record[:some_model]["some_other_entity"]).to eq(some_other_entity.id)
 
           loaded_aggregate = aggregate_class.load(1)
           expect(loaded_aggregate.some_entities).to all be_a(SomeEntity)
           expect(loaded_aggregate.some_entities.map(&:primary_key)).to contain_exactly(1, 2, 101, 102)
 
           new_aggregate = aggregate_class.create(
-            foo: 30,
+            foo: "30",
             some_entities: [
               entity_class.create(foo: 11, bar: :baz)
-            ]
+            ],
+            some_model: {
+              some_other_entity: {
+                foo: 10
+              }
+            }
           )
+
+          expect(new_aggregate.some_model.some_other_entity.foo).to eq(10)
 
           expect(aggregate_class.contains_associations?).to be(true)
           expect(entity_class.contains_associations?).to be(false)
-
-          tx.flush_created_record!(new_aggregate)
         end
       end
     end

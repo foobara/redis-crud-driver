@@ -229,6 +229,10 @@ module Foobara
           entity_class.attributes_type.element_types.each_pair do |attribute_name, attribute_type|
             if attribute_type.extends_symbol?(:duckture)
               attribute_names << attribute_name
+            elsif attribute_type.extends_symbol?(:model)
+              unless attribute_type.extends_symbol?(:entity)
+                attribute_names << attribute_name
+              end
             end
           end
 
