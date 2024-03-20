@@ -1,20 +1,20 @@
 GIT
   remote: foobara
-  revision: 692971ed7f8b3aad4071c8933e721088a786f248
+  revision: 9d507ed411aca4dcc747c0f61501c9b14cde3b13
   branch: main
   specs:
     foobara (0.0.1)
 
 GIT
   remote: https://github.com/foobara/dotenv-loader.git
-  revision: 4007e92b20ccfcaa54c19985e484c8a053464c0c
+  revision: 15bd91f9f7b2793c1766584e8661c87a5c81085d
   specs:
     foobara-dotenv-loader (0.1.0)
       dotenv
 
 GIT
   remote: https://github.com/foobara/rubocop-rules.git
-  revision: ea100ea86b708a441ef66ce0861dc72237316f2a
+  revision: e9d8f5c45ea37810f369d1c2f46e3e386d5abb2c
   specs:
     foobara-rubocop-rules (0.0.1)
       rubocop
@@ -47,7 +47,7 @@ GEM
     connection_pool (2.4.1)
     diff-lcs (1.5.0)
     docile (1.4.0)
-    dotenv (2.8.1)
+    dotenv (3.1.0)
     ffi (1.16.3)
     formatador (1.1.0)
     guard (2.18.1)
@@ -113,7 +113,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
-    rubocop (1.60.2)
+    rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -121,18 +121,18 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)
       rubocop (~> 1.41)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (2.26.1)
+    rubocop-rspec (2.27.1)
       rubocop (~> 1.40)
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)

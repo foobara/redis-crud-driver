@@ -3,7 +3,8 @@ RSpec.describe Foobara::RedisCrudDriver do
     stub_class("SomeEntity", Foobara::Entity) do
       attributes id: :integer,
                  foo: :integer,
-                 bar: :symbol
+                 bar: :symbol,
+                 created_at: :datetime
 
       primary_key :id
     end
@@ -597,7 +598,7 @@ RSpec.describe Foobara::RedisCrudDriver do
         some_entity2 = nil
 
         some_entity1 = aggregate_class.transaction do
-          some_entity2 = entity_class.create(foo: 11, bar: :baz)
+          some_entity2 = entity_class.create(foo: 11, bar: :baz, created_at: Time.now)
           entity_class.create(foo: 11, bar: :baz, id: 101)
         end
 
