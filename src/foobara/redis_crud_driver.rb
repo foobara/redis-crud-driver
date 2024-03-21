@@ -201,42 +201,14 @@ module Foobara
       end
 
       def prepare_attributes_for_redis(attributes)
-        json_serialized_attributes.each do |attribute_name|
-          if attributes.key?(attribute_name)
-            attributes[attribute_name] = JSON.fast_generate(attributes[attribute_name])
-          end
+        attributes.transform_values! do |value|
+          JSON.fast_generate(value)
         end
-
-        attributes
       end
 
       def restore_attributes_from_redis(attributes)
-        attributes.transform_keys!(&:to_sym)
-
-        json_serialized_attributes.each do |attribute_name|
-          if attributes.key?(attribute_name)
-            attributes[attribute_name] = JSON.parse(attributes[attribute_name])
-          end
-        end
-
-        attributes
-      end
-
-      def json_serialized_attributes
-        @json_serialized_attributes ||= begin
-          attribute_names = []
-
-          entity_class.attributes_type.element_types.each_pair do |attribute_name, attribute_type|
-            if attribute_type.extends_symbol?(:duckture) || attribute_type.extends_symbol?(:datetime)
-              attribute_names << attribute_name
-            elsif attribute_type.extends_symbol?(:model)
-              unless attribute_type.extends_symbol?(:entity)
-                attribute_names << attribute_name
-              end
-            end
-          end
-
-          attribute_names
+        attributes.to_h do |attribute_name, value|
+          [attribute_name.to_sym, JSON.parse(value)]
         end
       end
 

@@ -1,4 +1,5 @@
 RSpec.describe Foobara::RedisCrudDriver do
+  let(:redis) { described_class.redis }
   let(:entity_class) do
     stub_class("SomeEntity", Foobara::Entity) do
       attributes id: :integer,
@@ -623,7 +624,7 @@ RSpec.describe Foobara::RedisCrudDriver do
           )
         end
 
-        entity_class.transaction do
+        entity_class.transaction do |tx|
           crud_table = aggregate_class.current_transaction_table.entity_attributes_crud_driver_table
           raw_records = crud_table.all.to_a
           expect(raw_records.size).to eq(1)
@@ -651,6 +652,18 @@ RSpec.describe Foobara::RedisCrudDriver do
 
           expect(aggregate_class.contains_associations?).to be(true)
           expect(entity_class.contains_associations?).to be(false)
+
+          tx.flush!
+
+          attributes = redis.hgetall("some_aggregate:#{new_aggregate.primary_key}").transform_values do |value|
+            JSON.parse(value)
+          end
+          expect(attributes).to eq(
+            "foo" => 30,
+            "some_entities" => [new_aggregate.some_entities.first.primary_key],
+            "some_model" => { "some_other_entity" => new_aggregate.some_model.some_other_entity.primary_key },
+            "id" => new_aggregate.primary_key
+          )
         end
       end
     end
