@@ -31,5 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "redis"
 
+  spec.add_dependency "foobara"
+
   spec.metadata["rubygems_mfa_required"] = "true"
 end
