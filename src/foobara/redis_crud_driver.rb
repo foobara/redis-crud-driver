@@ -1,3 +1,5 @@
+require "json"
+
 module Foobara
   class RedisCrudDriver < Persistence::EntityAttributesCrudDriver
     class NoRedisUrlError < StandardError; end
