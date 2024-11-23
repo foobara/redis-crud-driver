@@ -1,5 +1,7 @@
-## [Unreleased]
+## [0.0.1] - 2024-11-22
 
-## [0.1.0] - 2024-01-08
+- Release as a gem
 
-- Initial release
+## [0.0.0] - 2024-01-08
+
+- Project birth

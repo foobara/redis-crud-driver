@@ -49,3 +49,7 @@ push git commits and the created tag, and push the `.gem` file to [rubygems.org]
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/redis_crud_driver.
+
+### Licensing
+
+This project is licensed under the Mozilla Public License Version 2.0. Please see LICENSE.txt for more info.

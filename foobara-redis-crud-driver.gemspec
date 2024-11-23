@@ -1,4 +1,4 @@
-require_relative "src/foobara/redis_crud_driver_version"
+require_relative "version"
 
 Gem::Specification.new do |spec|
   spec.name = "foobara-redis-crud-driver"
@@ -7,31 +7,28 @@ Gem::Specification.new do |spec|
   spec.email = ["azimux@gmail.com"]
 
   spec.summary = "Provides support for entity CRUD in Redis for Foobara"
+  spec.description = spec.summary
   spec.homepage = "https://github.com/foobara/redis-crud-driver"
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.2.2"
-
-  # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  spec.license = "MPL-2.0"
+  spec.required_ruby_version = ">= #{File.read("#{__dir__}/.ruby-version")}"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.chdir(__dir__) do
-    `git ls-files -z`.split("\x0").reject do |f|
-      (File.expand_path(f) == __FILE__) ||
-        f.start_with?(*%w[bin/ test/ spec/ features/ .git .circleci appveyor Gemfile])
-    end
-  end
-  spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  spec.files = Dir[
+    "lib/**/*",
+    "src/**/*",
+    "LICENSE*.txt",
+    "README.md",
+    "CHANGELOG.md",
+    ".ruby-version"
+  ]
+
   spec.require_paths = %w[lib src]
 
-  spec.add_dependency "redis"
-
   spec.add_dependency "foobara"
+  spec.add_dependency "redis"
 
   spec.metadata["rubygems_mfa_required"] = "true"
 end
