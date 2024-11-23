@@ -38,22 +38,6 @@ module Foobara
       end
     end
 
-    # We don't make use of Redis transaction feature here because they are do not really work
-    # like database transactions which is what this feature is based on. We might want to use database transactions
-    # in some sort of flush feature though.
-    def open_transaction
-      # Should we have some kind of fake transaction object that raises errors when used after rolledback/closed?
-      Object.new
-    end
-
-    def close_transaction(_raw_tx)
-    end
-
-    def rollback_transaction(_raw_tx)
-      # nothing to do... except maybe enter a state where we don't flush anything else
-      # but can just rely on higher-up plumbing for that
-    end
-
     class Table < Persistence::EntityAttributesCrudDriver::Table
       def initialize(...)
         super
@@ -67,28 +51,8 @@ module Foobara
         end
       end
 
-      def prefix
-        crud_driver.prefix
-      end
-
       def get_id
         redis.incr(sequence_key)
-      end
-
-      def sequence_key
-        @sequence_key ||= "#{entity_key_prefix}$sequence"
-      end
-
-      def primary_keys_index_key
-        @primary_keys_index_key ||= "#{entity_key_prefix}$all"
-      end
-
-      def entity_key_prefix
-        @entity_key_prefix ||= [*prefix, table_name].join(":")
-      end
-
-      def record_key_prefix(record_id)
-        "#{entity_key_prefix}:#{record_id}"
       end
 
       def all
@@ -197,6 +161,26 @@ module Foobara
       end
 
       private
+
+      def prefix
+        crud_driver.prefix
+      end
+
+      def sequence_key
+        @sequence_key ||= "#{entity_key_prefix}$sequence"
+      end
+
+      def primary_keys_index_key
+        @primary_keys_index_key ||= "#{entity_key_prefix}$all"
+      end
+
+      def entity_key_prefix
+        @entity_key_prefix ||= [*prefix, table_name].join(":")
+      end
+
+      def record_key_prefix(record_id)
+        "#{entity_key_prefix}:#{record_id}"
+      end
 
       def redis
         raw_connection
