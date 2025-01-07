@@ -1,8 +1,8 @@
+require_relative "version"
+
 source "https://rubygems.org"
+ruby Foobara::RedisCrudDriverVersion::MINIMUM_RUBY_VERSION
 
-ruby File.read("#{__dir__}/.ruby-version")
-
-# Specify your gem's dependencies in redis_crud_driver.gemspec
 gemspec
 
 # Development dependencies go here

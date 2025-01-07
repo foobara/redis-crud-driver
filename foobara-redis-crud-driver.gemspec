@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.description = spec.summary
   spec.homepage = "https://github.com/foobara/redis-crud-driver"
   spec.license = "MPL-2.0"
-  spec.required_ruby_version = ">= #{File.read("#{__dir__}/.ruby-version")}"
+  spec.required_ruby_version = Foobara::RedisCrudDriverVersion::MINIMUM_RUBY_VERSION
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
