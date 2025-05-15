@@ -39,19 +39,13 @@ module Foobara
     end
 
     class Table < Persistence::EntityAttributesCrudDriver::Table
-      def initialize(...)
-        super
-
+      def get_id
         unless entity_class.primary_key_type.type_symbol == :integer
-          # TODO: when primary key is a string such as a uuid we should
-          # probably set the score to 0 and use other methods. But not interested in implementing that stuff now.
           # :nocov:
           raise "Only integer primary keys are supported for now"
           # :nocov:
         end
-      end
 
-      def get_id
         redis.incr(sequence_key)
       end
 
@@ -113,7 +107,7 @@ module Foobara
 
         # TODO: use redis.multi here
         redis.hset(record_key_prefix(record_id), attributes)
-        redis.zadd(primary_keys_index_key, record_id, record_id)
+        redis.zadd(primary_keys_index_key, id_to_score(record_id), record_id)
         find(record_id)
       end
 
@@ -202,19 +196,56 @@ module Foobara
       def batches_of_primary_keys
         limit = [0, 50]
 
-        lower_bound = 0
+        if string_primary_key?
+          lower_bound = "-"
+          upper_bound = "+"
+          command = :zrangebylex
+        else
+          lower_bound = 0
+          upper_bound = "+inf"
+          command =   :zrangebyscore
+        end
 
         Enumerator.new do |yielder|
           loop do
-            batch = redis.zrangebyscore(primary_keys_index_key, lower_bound, "+inf", limit:)
-
+            batch = redis.send(command, primary_keys_index_key, lower_bound, upper_bound, limit:)
             break if batch.empty?
 
             yielder << batch
 
-            lower_bound = batch.last.to_i + 1
+            lower_bound = if string_primary_key?
+                            "(#{batch.last}"
+                          else
+                            id_to_score(batch.last) + 1
+                          end
           end
         end.lazy
+      end
+
+      def id_to_score(id)
+        if string_primary_key?
+          0
+        else
+          id.to_i
+        end
+      end
+
+      def string_primary_key?
+        primary_key_symbol == :string
+      end
+
+      def primary_key_symbol
+        return @primary_key_symbol if defined?(@primary_key_symbol)
+
+        type_symbol = entity_class.primary_key_type.type_symbol
+
+        unless [:integer, :string].include?(type_symbol)
+          # :nocov:
+          raise "Only integer and string primary keys are supported for now"
+          # :nocov:
+        end
+
+        @primary_key_symbol = type_symbol
       end
     end
   end

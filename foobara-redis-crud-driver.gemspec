@@ -25,9 +25,9 @@ Gem::Specification.new do |spec|
     ".ruby-version"
   ]
 
-  spec.require_paths = %w[lib src]
+  spec.require_paths = ["lib", "src"]
 
-  spec.add_dependency "foobara"
+  spec.add_dependency "foobara", "~> 0.0.125"
   spec.add_dependency "redis"
 
   spec.metadata["rubygems_mfa_required"] = "true"

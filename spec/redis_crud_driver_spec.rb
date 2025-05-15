@@ -1,3 +1,5 @@
+require "base64"
+
 RSpec.describe Foobara::RedisCrudDriver do
   let(:redis) { described_class.redis }
   let(:entity_class) do
@@ -664,6 +666,53 @@ RSpec.describe Foobara::RedisCrudDriver do
             "some_model" => { "some_other_entity" => new_aggregate.some_model.some_other_entity.primary_key },
             "id" => new_aggregate.primary_key
           )
+        end
+      end
+    end
+  end
+
+  describe "#all" do
+    let(:driver) { entity_class.entity_base.entity_attributes_crud_driver }
+
+    context "when using string ids" do
+      let(:entity_class) do
+        stub_class("SomeEntity", Foobara::Entity) do
+          attributes do
+            id :string, :required
+            foo :integer, :required
+            bar :integer, :required
+          end
+
+          primary_key :id
+        end
+      end
+
+      context "when there's tons of records existing" do
+        let(:records) do
+          all = []
+
+          entity_class.transaction do
+            200.times do |i|
+              id = Base64.strict_encode64(SecureRandom.random_bytes(20))
+              all << entity_class.create(id:, foo: i, bar: i)
+            end
+          end
+
+          all
+        end
+
+        it "returns all of the expected records" do
+          expect(records.size).to eq(200)
+
+          all = []
+
+          entity_class.transaction do
+            entity_class.all do |record|
+              all << record
+            end
+          end
+
+          expect(all.size).to eq(records.size)
         end
       end
     end
