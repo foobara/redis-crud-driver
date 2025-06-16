@@ -5,6 +5,8 @@ ruby Foobara::RedisCrudDriverVersion::MINIMUM_RUBY_VERSION
 
 gemspec
 
+# gem "foobara", path: "../foobara"
+
 # Development dependencies go here, others go in .gemspec instead
 
 group :development, :test do
@@ -26,6 +28,7 @@ end
 
 group :test do
   gem "base64"
+  gem "foobara-crud-driver-spec-helpers", "~> 1.0.0" # , path: "../crud-driver-spec-helpers"
   gem "foobara-spec-helpers"
   gem "rspec"
   gem "rspec-its"

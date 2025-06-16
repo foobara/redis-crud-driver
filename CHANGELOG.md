@@ -1,3 +1,7 @@
+## [0.0.6] - 2025-06-16
+
+- Move crud-driver-specific specs to foobara-crud-driver-spec-helpers gem
+
 ## [0.0.5] - 2025-05-15
 
 - Support string primary keys

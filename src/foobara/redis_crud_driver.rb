@@ -49,7 +49,7 @@ module Foobara
         redis.incr(sequence_key)
       end
 
-      def all
+      def all(page_size: nil)
         Enumerator.new do |yielder|
           batches_of_primary_keys.each do |batch|
             raw_records = redis.pipelined do |p|
