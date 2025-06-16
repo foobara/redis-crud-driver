@@ -77,17 +77,6 @@ module Foobara
         end
       end
 
-      # TODO: move this up to base class as a default
-      def find!(record_id)
-        attributes = find(record_id)
-
-        unless attributes
-          raise CannotFindError.new(record_id, "does not exist")
-        end
-
-        attributes
-      end
-
       def insert(attributes)
         attributes = Util.deep_dup(attributes)
 
