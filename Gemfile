@@ -10,7 +10,7 @@ gemspec
 # Development dependencies go here, others go in .gemspec instead
 
 group :development, :test do
-  gem "foobara-dotenv-loader"
+  gem "foobara-dotenv-loader", "< 2.0.0"
   gem "pry"
   gem "pry-byebug"
   gem "rake"
@@ -20,7 +20,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "foobara-rubocop-rules"
+  gem "foobara-rubocop-rules", ">= 1.0.0"
   gem "guard-rspec"
   gem "rubocop-rake"
   gem "rubocop-rspec"
@@ -28,8 +28,8 @@ end
 
 group :test do
   gem "base64"
-  gem "foobara-crud-driver-spec-helpers", "~> 1.0.0" # , path: "../crud-driver-spec-helpers"
-  gem "foobara-spec-helpers"
+  gem "foobara-crud-driver-spec-helpers", "< 2.0.0" # , path: "../crud-driver-spec-helpers"
+  gem "foobara-spec-helpers", "< 2.0.0"
   gem "rspec"
   gem "rspec-its"
   gem "simplecov"

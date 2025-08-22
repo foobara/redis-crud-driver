@@ -1,3 +1,7 @@
+## [0.1.0] - 2025-08-22
+
+- Mark as compatible with Foobara 0.1.0
+
 ## [0.0.6] - 2025-06-16
 
 - Move crud-driver-specific specs to foobara-crud-driver-spec-helpers gem
