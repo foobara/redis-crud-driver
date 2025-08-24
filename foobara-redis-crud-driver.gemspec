@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
     ".ruby-version"
   ]
 
-  spec.require_paths = ["src"]
+  spec.require_paths = ["lib"]
 
   spec.add_dependency "foobara", ">= 0.1.1", "< 2.0.0"
   spec.add_dependency "redis"
