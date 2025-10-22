@@ -1,3 +1,7 @@
+## [0.2.0] - 2025-10-21
+
+- Rename prefix: to key_prefix:
+
 ## [0.1.1] - 2025-08-24
 
 - Fix incorrect require path

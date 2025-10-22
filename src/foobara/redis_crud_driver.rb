@@ -17,12 +17,19 @@ module Foobara
       end
     end
 
-    attr_reader :prefix
+    attr_reader :key_prefix
 
     # TODO: maybe we should distinguish between nil being passed in and no args? nil feels like it could be an error.
-    def initialize(connection_or_credentials = nil, prefix: nil)
-      @prefix = prefix
-      super(connection_or_credentials)
+    def initialize(connection_or_credentials = nil, key_prefix: nil, prefix: nil, **)
+      if prefix
+        # :nocov:
+        warn "Using prefix: is deprecated use key_prefix: instead"
+        key_prefix ||= prefix
+        # :nocov:
+      end
+
+      @key_prefix = key_prefix
+      super(connection_or_credentials, **)
     end
 
     def open_connection(connection_url_or_credentials)
@@ -146,8 +153,8 @@ module Foobara
 
       private
 
-      def prefix
-        crud_driver.prefix
+      def key_prefix
+        crud_driver.key_prefix
       end
 
       def sequence_key
@@ -159,7 +166,7 @@ module Foobara
       end
 
       def entity_key_prefix
-        @entity_key_prefix ||= [*prefix, table_name].join(":")
+        @entity_key_prefix ||= [*key_prefix, table_name].join(":")
       end
 
       def record_key_prefix(record_id)
