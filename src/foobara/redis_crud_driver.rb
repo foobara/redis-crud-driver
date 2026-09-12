@@ -22,10 +22,10 @@ module Foobara
     # TODO: maybe we should distinguish between nil being passed in and no args? nil feels like it could be an error.
     def initialize(connection_or_credentials = nil, key_prefix: nil, prefix: nil, **)
       if prefix
-        # :nocov:
+        # simplecov:disable
         warn "Using prefix: is deprecated use key_prefix: instead"
         key_prefix ||= prefix
-        # :nocov:
+        # simplecov:enable
       end
 
       @key_prefix = key_prefix
@@ -48,9 +48,9 @@ module Foobara
     class Table < Persistence::EntityAttributesCrudDriver::Table
       def get_id
         unless entity_class.primary_key_type.type_symbol == :integer
-          # :nocov:
+          # simplecov:disable
           raise "Only integer primary keys are supported for now"
-          # :nocov:
+          # simplecov:enable
         end
 
         redis.incr(sequence_key)
@@ -111,9 +111,9 @@ module Foobara
         record_id = record_id_for(attributes)
 
         unless exists?(record_id)
-          # :nocov:
+          # simplecov:disable
           raise CannotUpdateError.new(record_id, "does not exist")
-          # :nocov:
+          # simplecov:enable
         end
 
         attributes = prepare_attributes_for_redis(Util.deep_dup(attributes))
@@ -127,16 +127,16 @@ module Foobara
         key = record_key_prefix(record_id)
 
         if redis.del(key) != 1
-          # :nocov:
+          # simplecov:disable
           raise CannotUpdateError.new(record_id, "#{key} does not exist")
-          # :nocov:
+          # simplecov:enable
         end
 
         unless redis.zrem(primary_keys_index_key, record_id)
-          # :nocov:
+          # simplecov:disable
           raise "Unexpected: when deleting #{key}, " \
                 "#{record_id} was not present in the primary key index for #{primary_keys_index_key}"
-          # :nocov:
+          # simplecov:enable
         end
       end
 
@@ -179,7 +179,7 @@ module Foobara
 
       def prepare_attributes_for_redis(attributes)
         attributes.transform_values! do |value|
-          JSON.fast_generate(value)
+          JSON.generate(value)
         end
       end
 
@@ -236,9 +236,9 @@ module Foobara
         type_symbol = entity_class.primary_key_type.type_symbol
 
         unless [:integer, :string].include?(type_symbol)
-          # :nocov:
+          # simplecov:disable
           raise "Only integer and string primary keys are supported for now"
-          # :nocov:
+          # simplecov:enable
         end
 
         @primary_key_symbol = type_symbol

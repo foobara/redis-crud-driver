@@ -1,3 +1,7 @@
+## [0.2.1] - 2026-09-11
+
+- Handle removed JSON.fast_generate
+
 ## [0.2.0] - 2025-10-21
 
 - Rename prefix: to key_prefix:
