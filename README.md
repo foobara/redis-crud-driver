@@ -1,55 +1,65 @@
-# RedisCrudDriver
+# Foobara::RedisCrudDriver
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library
-into a gem. Put your Ruby code in the file `lib/redis_crud_driver`. To experiment with that code, run `bin/console` for
-an interactive prompt.
+`foobara-redis-crud-driver` is a Redis CRUD driver for Foobara.
 
 ## Installation
 
-From this directory, run the following:
+You can install the gem into an existing Foobara project by running `foob g redis-crud-driver`.
 
-```
-bundle config set local.foobara ../foobara
-bundle config set disable_local_branch_check true
-```
+Or add `foobara-redis-crud-driver` to your Gemfile or .gemspec file and `bundle install`.
 
-NOTE: you don´t need to do this because it is already done, but when setting up a new project, you need to
-put a valid private key in REDIS_CRUD_DRIVER_KEY_FOR_FOOBARA in gitub actions secrets for this
-repository.
-
-You can copy the key with something like `cat ~/.ssh/<private_key_you_want_to_use> | xclip`
-
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it
-to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with
-instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+Or even just `gem install foobara-redis-crud-driver` if playing with it directly in the scripts.
 
 ## Usage
 
-TODO: Write usage instructions here
+Set up the Redis CRUD driver:
 
-## Development
+```ruby
+require "foobara/redis_crud_driver" 
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can
-also run `bin/console` for an interactive prompt that will allow you to experiment.
+driver = Foobara::RedisCrudDriver.new
+Foobara::Persistence.default_crud_driver = driver 
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the
-version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version,
-push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Things to know
+
+- **Key prefix** `key_prefix:` This will automatically prefix all keys this crud driver uses with the indicated prefix.
+
+### Choosing how to connect
+
+The first argument to `Foobara::RedisCrudDriver.new` can be any of these:
+
+- **A Redis URL**.
+
+- An existing `Redis` client.
+
+- **A credentials hash**, which is anything `Redis.new` accepts could look like so:
+
+```ruby
+require "foobara/redis_crud_driver" 
+
+driver = Foobara::RedisCrudDriver.new(
+  { host: "localhost", port: 6379, db: 0, username: "default", password: "your-password" },
+  key_prefix: "myapp"
+)
+Foobara::Persistence.default_crud_driver = driver
+```
+
+You can also leave the connection out. The driver then reads `ENV["REDIS_URL"]` itself.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/redis_crud_driver.
+Bug reports and pull requests are welcome at [github.com/foobara/redis-crud-driver](https://github.com/foobara/redis-crud-driver).
 
-### Licensing
+To work on an existing issue or submit a Pull Request:
 
-This project is licensed under the Mozilla Public License Version 2.0. Please see LICENSE.txt for more info.
+1. Fork the repository and clone it to your local machine
+2. Run `bundle install` to install dependencies
+3. Start a Redis server and run `rake` to ensure that everything works as expected before making any changes
+4. Implement your changes
+5. Restart the Redis server and re-run `rake` to make sure that all tests and Rubocop pass
+6. Commit your changes, push to GitHub and open a Pull Request for review
+
+## License
+
+This project is licensed under the MPL-2.0 license. Please see [LICENSE.txt](LICENSE.txt) for more information.
