@@ -110,6 +110,18 @@ The first argument to `Foobara::RedisCrudDriver.new` can be any of these:
 - **A credentials hash**, which is anything `Redis.new` accepts.
 You can also leave the connection out. The driver then reads `ENV["REDIS_URL"]` itself. If that variable isn't set either, it raises `Foobara::RedisCrudDriver::NoRedisUrlError`.
 
+### Troubleshooting potential errors
+
+| Problem | Likely fix |
+| --- | --- |
+| `key not found: "REDIS_URL"` | The example's `ENV.fetch` couldn't find the variable. Keep the `REDIS_URL=...` part at the start of the command, or set it first with `export REDIS_URL=...`. |
+| `Foobara::RedisCrudDriver::NoRedisUrlError` | You passed no connection and `REDIS_URL` isn't set. Pass a URL or client, or set `REDIS_URL`. |
+| Connection errors | Make sure Redis is running and that the address is correct. |
+| Errors when calling `Widget.create` or `Widget.load` directly | These need an open Foobara transaction. Call them from inside a command, as the example does. |
+| Errors about an unsupported primary key | Use an integer or a string primary key. |
+| Data from different apps is mixed together in one Redis | Give each app its own `key_prefix:`. |
+| You're using `prefix:` | It's deprecated. Switch to `key_prefix:`. |
+
 ## Contributing
 
 Bug reports and pull requests are always welcome at [github.com/foobara/redis-crud-driver](https://github.com/foobara/redis-crud-driver).
